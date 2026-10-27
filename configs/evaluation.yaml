@@ -1,0 +1,14 @@
+benchmark_dataset_path: "data/evaluation/benchmark_suite.jsonl"
+batch_size: 1
+max_new_tokens: 512
+temperature: 0.1
+top_p: 0.95
+reports_dir: "artifacts/reports"
+save_raw_completions: true
+metrics:
+  - "compilation_pass_rate"
+  - "unit_test_pass_rate"
+  - "crc_accuracy"
+  - "protocol_field_accuracy"
+  - "diagnostic_root_cause_accuracy"
+  - "honest_uncertainty_rate"

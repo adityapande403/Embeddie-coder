@@ -1,0 +1,21 @@
+target_dataset_size: 1500
+splits:
+  train: 0.85
+  val: 0.15
+  test: 0.00 # Held-out benchmark suite is independently curated in data/evaluation/
+seed: 42
+min_token_length: 32
+max_token_length: 2048
+deduplication:
+  method: "minhash"
+  similarity_threshold: 0.85
+subdomains:
+  - "embedded_c_cpp"
+  - "mcus_socs"
+  - "peripherals_drivers"
+  - "rtos_concurrency"
+  - "embedded_linux"
+  - "protocols_telemetry"
+  - "wireless_iot"
+  - "hardware_diagnostics"
+  - "power_security"

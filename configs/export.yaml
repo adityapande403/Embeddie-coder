@@ -1,0 +1,9 @@
+base_model_id: "Qwen/Qwen2.5-Coder-1.5B-Instruct"
+lora_adapter_dir: "models/sft_checkpoint"
+output_merged_dir: "models/embeddedcoder_merged"
+output_gguf_dir: "models/gguf"
+quantization_types:
+  - "Q4_K_M"
+  - "Q8_0"
+ollama_model_name: "embeddedcoder:1.5b"
+system_prompt: "You are EmbeddedCoder AI, an expert embedded systems engineer, firmware architect, compiler engineer, and protocol specialist. Prioritize technical correctness, memory safety, hardware timing, and verifiable facts over speculation."

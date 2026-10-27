@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "embeddedcoder"
+version = "0.1.0"
+description = "Universal Embedded Systems Engineering Small Language Model"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "EmbeddedCoder AI Team"}
+]
+keywords = [
+    "embedded", "firmware", "c", "cpp", "microcontrollers", 
+    "rtos", "linux", "protocols", "telematics", "modbus", "can"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Embedded Systems",
+]
+
+dependencies = [
+    "torch>=2.0.0",
+    "transformers>=4.40.0",
+    "peft>=0.10.0",
+    "trl>=0.8.0",
+    "accelerate>=0.28.0",
+    "datasets>=2.18.0",
+    "pydantic>=2.6.0",
+    "fastapi>=0.110.0",
+    "uvicorn>=0.28.0",
+    "pyyaml>=6.0",
+    "rich>=13.0.0",
+    "click>=8.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "httpx>=0.27.0",
+]
+
+[project.scripts]
+embeddedcoder = "embeddedcoder.cli.main:cli"
+
+[tool.setuptools.packages.find]
+where = ["src"]

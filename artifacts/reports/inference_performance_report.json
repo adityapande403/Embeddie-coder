@@ -1,0 +1,29 @@
+{
+  "model_path": "models/embeddedcoder_merged",
+  "load_time_seconds": 5.09,
+  "vram_allocated_mb": 2944.4,
+  "host_ram_used_mb": 321.2,
+  "benchmarks": [
+    {
+      "prompt_type": "Short (Driver Init)",
+      "input_tokens": 20,
+      "output_tokens": 256.0,
+      "avg_throughput_tps": 56.2,
+      "avg_latency_ms": 4571.4
+    },
+    {
+      "prompt_type": "Medium (Protocol Parse)",
+      "input_tokens": 24,
+      "output_tokens": 256.0,
+      "avg_throughput_tps": 59.6,
+      "avg_latency_ms": 4297.8
+    },
+    {
+      "prompt_type": "Long (RTOS Architecture)",
+      "input_tokens": 26,
+      "output_tokens": 256.0,
+      "avg_throughput_tps": 59.8,
+      "avg_latency_ms": 4282.5
+    }
+  ]
+}

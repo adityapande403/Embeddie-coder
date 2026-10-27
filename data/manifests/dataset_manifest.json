@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0",
+  "total_examples": 15,
+  "train_count": 13,
+  "val_count": 2,
+  "benchmark_count": 8,
+  "subdomain_distribution": {
+    "embedded_c_cpp": 4,
+    "mcus_socs": 2,
+    "peripherals_drivers": 1,
+    "rtos_concurrency": 1,
+    "embedded_linux": 1,
+    "protocols_telemetry": 2,
+    "wireless_iot": 1,
+    "hardware_diagnostics": 1,
+    "power_security": 2
+  },
+  "leakage_violations": 0,
+  "train_path": "D:\\Aditya\\hf4\\data\\processed\\train.jsonl",
+  "val_path": "D:\\Aditya\\hf4\\data\\processed\\val.jsonl",
+  "benchmark_path": "D:\\Aditya\\hf4\\data\\evaluation\\benchmark_suite.jsonl"
+}

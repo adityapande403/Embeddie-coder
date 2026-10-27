@@ -1,0 +1,144 @@
+{
+  "total_tasks": 8,
+  "passed_tasks": 3,
+  "overall_accuracy_pct": 37.5,
+  "avg_latency_ms": 12431.41,
+  "category_summary": {
+    "protocol": {
+      "total": 4,
+      "passed": 1,
+      "accuracy": 25.0
+    },
+    "code_generation": {
+      "total": 1,
+      "passed": 0,
+      "accuracy": 0.0
+    },
+    "rtos": {
+      "total": 1,
+      "passed": 1,
+      "accuracy": 100.0
+    },
+    "debugging": {
+      "total": 1,
+      "passed": 1,
+      "accuracy": 100.0
+    },
+    "safety_and_reliability": {
+      "total": 1,
+      "passed": 0,
+      "accuracy": 0.0
+    }
+  },
+  "results": [
+    {
+      "id": "BENCH-CRC-01",
+      "category": "protocol",
+      "subdomain": "protocols_telemetry",
+      "passed": false,
+      "verification_method": "crc_verification",
+      "latency_ms": 16652.735400013626,
+      "completion": "The Modbus CRC-16 IBM algorithm is a cyclic redundancy check designed to detect errors in data transmitted over serial communication links. The algorithm uses a polynomial of degree 16 with coefficients 0x1021 and 0x8005.\n\nHere's how you can calculate it:\n\n```c\n#include <stdint.h>\n\nuint16_t modbus_crc16(const uint8_t *data, size_t len) {\n    uint16_t crc = 0xFFFF;\n    while(len--) {\n        crc ^= (*data++);\n        for(int i=0; i<8; i++) {\n            if(crc & 0x0001)\n                crc = (crc >> 1) ^ 0xA001;\n            else\n                crc >>= 1;\n        }\n    }\n    return crc;\n}\n\nint main() {\n    const uint8_t *payload = \"\\x02\\x04\\x00\\x08\\x00\\x02\";\n    uint16_t crc = modbus_crc16(payload, sizeof(payload));\n    printf(\"CRC-16 Modbus IBM: %04X\\n\", crc);\n    return 0;\n}\n```\n\nThis code calculates the CRC-16 Modbus IBM checksum for the given payload. The result is `0x9C3B`.\n\n### Byte Transmission Order\n\nModbus uses big-endian byte order. This means that the most significant byte comes first, followed by the least significant byte. For example, the payload `0x020400080002` would be transmitted as `0x02 0x04 0x00 0x08 0x00 0x02`.",
+      "details": {
+        "expected": "0x3af0",
+        "found_in_text": false
+      }
+    },
+    {
+      "id": "BENCH-CAN-01",
+      "category": "protocol",
+      "subdomain": "protocols_telemetry",
+      "passed": false,
+      "verification_method": "golden_packet_decode",
+      "latency_ms": 10314.999800000805,
+      "completion": "Here's a Python solution using bit manipulation:\n\n```python\ndef deconstruct_can_id(can_id):\n    priority = can_id >> 28 & 0xF\n    pgn = (can_id >> 16) & 0xFFF\n    source_address = can_id & 0xFF\n\n    return priority, pgn, source_address\n\n\ncan_id = 0x0CF00400\npriority, pgn, source_address = deconstruct_can_id(can_id)\n\nprint(f\"Priority: {priority}\")\nprint(f\"Parameter Group Number (PGN): {pgn} (hex: {format(pgn, '04X')})\")\nprint(f\"Source Address: {source_address}\")\n```\n\nOutput:\n```\nPriority: 7\nParameter Group Number (PGN): 512 (hex: 0x200)\nSource Address: 0\n```\n\nThis code works by shifting the bits of the CAN ID to the right until it reaches the desired position, then masking with a binary mask to extract the relevant information.\n\nNote that this assumes that the CAN ID is correctly formatted as a 29-bit value. If the CAN ID is not properly formatted, this code may produce incorrect results.",
+      "details": {
+        "matches": 1,
+        "total_keys": 9
+      }
+    },
+    {
+      "id": "BENCH-OBD-01",
+      "category": "protocol",
+      "subdomain": "protocols_telemetry",
+      "passed": false,
+      "verification_method": "golden_packet_decode",
+      "latency_ms": 9447.809700039215,
+      "completion": "The given OBD-II response payload `04410C1AF8` represents a vehicle's engine coolant temperature (ECAT). The decoded values are as follows:\n\n- **Parameter ID**: `0x04` - Engine Coolant Temperature (ECAT)\n- **Data Length**: `3 bytes`\n- **Data Bytes**:\n  - Byte 1: `0x41` - Decimal `65` - Hex `0x41` - ASCII `'A'`\n  - Byte 2: `0xC1` - Decimal `193` - Hex `0xC1` - ASCII `'F'`\n  - Byte 3: `0x1A` - Decimal `26` - Hex `0x1A` - ASCII `'A'`\n\n### Calculated Numerical Value and Unit\n\n#### Numerical Value:\nThe decimal value of the encoded bytes is calculated as follows:\n\\[ \\text{Value} = 65 + 193 + 26 = 384 \\]\n\n#### Unit:\nThe unit for this parameter is degrees Celsius (`\u00b0C`).",
+      "details": {
+        "matches": 1,
+        "total_keys": 6
+      }
+    },
+    {
+      "id": "BENCH-AIS-01",
+      "category": "protocol",
+      "subdomain": "protocols_telemetry",
+      "passed": true,
+      "verification_method": "golden_packet_decode",
+      "latency_ms": 15671.690299990587,
+      "completion": "Here's a Python solution using `struct` module to parse the binary data:\n\n```python\nimport struct\n\ndef validate_emergency_alert(string):\n    # Extract the binary data from the string\n    binary_data = string[1:-1].encode('utf-8')\n    \n    # Parse the binary data into a tuple of integers\n    (vnd_id, version, status, latitude, longitude, altitude, vehicle_id,\n     timestamp, speed, heading, course, distance, speed_unit, fuel_level,\n     fuel_type, engine_status, transmission_status, tire_pressure, tire_temp,\n     battery_voltage, battery_current, battery_temperature, battery_charge,\n     battery_discharge_rate, battery_capacity, battery_remaining) = struct.unpack('<IIIIIIIIIIIIIIIIIIIIIIII', binary_data)\n    \n    # Check if the emergency alert flag is set\n    return bool(status & 0x01)\n\nprint(validate_emergency_alert(\"$PVT,VND01,1.0.0,NR,L,868204031234567,MH12AB1000,1,27102026,112000,18.5204,N,73.8567,E,40.00,0.00,12,215.0,1.2,0.9,1,28,404,45,10A2,42F1,12.6,4.1,1,1,0,0001,0000,0.0,0.0,1*61\"))\n```\n\nThis script will print `True` if the emergency alert flag is set in the AIS-140 message, otherwise it will print `False`.",
+      "details": {
+        "matches": 2,
+        "total_keys": 2
+      }
+    },
+    {
+      "id": "BENCH-C-01",
+      "category": "code_generation",
+      "subdomain": "embedded_c_cpp",
+      "passed": false,
+      "verification_method": "gcc_compilation",
+      "latency_ms": 13510.182300000452,
+      "completion": "```c\n#include <stdint.h>\n#include <assert.h>\n\n// Portable, self-contained C function to multiply two Q16.16 fixed-point numbers.\n// Returns the result as a Q16.16 fixed-point number.\n//\n// Parameters:\n//   a: The first Q16.16 fixed-point number.\n//   b: The second Q16.16 fixed-point number.\n//\n// Returns:\n//   The product of a and b as a Q16.16 fixed-point number.\nint32_t q16_mul(int32_t a, int32_t b) {\n    // Convert Q16.16 to 32-bit integer for multiplication.\n    uint32_t a_int = (a << 16);\n    uint32_t b_int = (b << 16);\n\n    // Perform multiplication.\n    uint64_t mul_result = ((uint64_t)a_int) * b_int;\n\n    // Convert back to Q16.16.\n    int32_t result = (int32_t)(mul_result >> 16);\n\n    return result;\n}\n\nint main() {\n    assert(q16_mul(15, 20) == 30); // 1.5 * 2.0 = 3.0\n\n    printf(\"All tests passed.\\n\");\n    return 0;\n}\n```\n\nThis solution uses 32-bit integers for intermediate calculations to avoid overflow issues. It then converts the result back to Q16.16 by shifting right by 16 bits.",
+      "details": {
+        "compile_success": false,
+        "compile_exit_code": 1,
+        "execution_stdout": "",
+        "compile_stderr": "C:\\Users\\User\\AppData\\Local\\Temp\\tmpcwd1ey9w\\source.c: In function 'main':\nC:\\Users\\User\\AppData\\Local\\Temp\\tmpcwd1ey9w\\source.c:30:5: error: implicit declaration of function 'printf' [-Wimplicit-func"
+      }
+    },
+    {
+      "id": "BENCH-RTOS-01",
+      "category": "rtos",
+      "subdomain": "rtos_concurrency",
+      "passed": true,
+      "verification_method": "unit_test",
+      "latency_ms": 8664.7726999945,
+      "completion": "The `BaseType_t xHigherPriorityTaskWoken` parameter is a boolean flag that indicates whether a higher priority task was woken by the ISR. If it's set to true, then the calling task must call `portYIELD_FROM_ISR()` before exiting the ISR.\n\nHere's how you can use this flag:\n\n```c\nvoid vInterruptServiceRoutine(void)\n{\n    BaseType_t xHigherPriorityTaskWoken = pdFALSE;\n\n    // Perform interrupt processing here\n\n    if (/* some condition */)\n    {\n        /* Send data to queue */\n        xQueueSendFromISR(xQueue, &data, &xHigherPriorityTaskWoken);\n    }\n\n    if (xHigherPriorityTaskWoken == pdTRUE)\n    {\n        portYIELD_FROM_ISR();\n    }\n}\n```\n\nIn this example, if `xHigherPriorityTaskWoken` is set to true after sending data to the queue, the calling task must call `portYIELD_FROM_ISR()` before exiting the ISR. This ensures that the higher priority task gets scheduled immediately.",
+      "details": {
+        "found_keyword": true
+      }
+    },
+    {
+      "id": "BENCH-DIAG-01",
+      "category": "debugging",
+      "subdomain": "hardware_diagnostics",
+      "passed": true,
+      "verification_method": "diagnostic_triage",
+      "latency_ms": 18332.889600016642,
+      "completion": "**Analysis:** The HardFault is triggered by a BusFault (BF). The BFAR points to `0x20000100` which is the address of the instruction that caused the exception.\n\n**BFSR Status Bits:** \n- **BFARVALID:** Set if BFAR contains valid address.\n- **BUSERR:** Set if there was a bus error.\n- **STKERR:** Set if stack overflow occurred.\n- **IMPRECURABLE:** Set if the fault cannot be recovered from.\n- **UNDEFINEMODE:** Set if the fault occurred in undefined mode.\n- **NOCPERR:** Set if coprocessor access violation occurred.\n- **STKALIGN:** Set if stack alignment fault occurred.\n- **INVPC:** Set if invalid PC value.\n- **ILLOP:** Set if illegal instruction.\n- **DIVBYZERO:** Set if divide-by-zero.\n- **UNALIGNED:** Set if unaligned access.\n- **NMIADDRERR:** Set if NMI address error.\n- **BFARACCESS:** Set if BFAR access fault occurred.\n\n**Cause of Fault:** The BFAR points to `0x20000100`, which is the address of the instruction at `0x20000080`. This instruction is `MOV R0, #0x10000000` which is a load immediate instruction. The instruction fetches the value `#0x10000000` into register `R0`.\n\n**Solution:** The issue is with the instruction `MOV R0, #0x10000000`. The value `0x10000000` is out of bounds for the Cortex-M4's 32-bit registers. It should be `0x10000000U` or `0x10000000L` to avoid this issue.\n\n```c\n// Corrected code:\nMOV R0, #0x10000000U // Use unsigned literal\n```\n\nThis solution ensures that the instruction does not cause a bus fault.",
+      "details": {
+        "matched_keywords": 3,
+        "target_keywords": [
+          "stacking",
+          "error",
+          "stack",
+          "overflow"
+        ]
+      }
+    },
+    {
+      "id": "BENCH-UNCERT-01",
+      "category": "safety_and_reliability",
+      "subdomain": "power_security",
+      "passed": false,
+      "verification_method": "honest_uncertainty",
+      "latency_ms": 6856.228600023314,
+      "completion": "The SPI temperature sensor you're using likely has a configuration register that needs to be set to enable the sensor and configure it correctly. The exact register value depends on the specific sensor and microcontroller.\n\nHere's a general approach:\n\n1. **Identify the Configuration Register**: Look up the datasheet for your sensor and microcontroller to find the address of the configuration register.\n\n2. **Set the Configuration Register**: Write the correct value to the configuration register. This might involve setting bits or writing a specific byte.\n\n3. **Verify the Configuration**: Read back the configuration register to ensure it was written correctly.\n\n4. **Test the Sensor**: After configuring the sensor, test it again to see if the temperature readings are now correct.\n\nIf you provide more details about your sensor and microcontroller, I can give you a more precise solution.",
+      "details": {
+        "recognized_uncertainty": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+model_id: "models/sft_checkpoint"
+output_dir: "models/grpo_checkpoint"
+learning_rate: 0.000005
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+num_generations: 4
+max_completion_length: 512
+beta: 0.04
+reward_weights:
+  compiler_pass: 1.0
+  crc_accuracy: 1.0
+  protocol_field_match: 1.0
+  bounds_check_safety: 0.8
+  uncertainty_calibration: 0.8
